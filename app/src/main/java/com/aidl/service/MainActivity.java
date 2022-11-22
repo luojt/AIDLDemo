@@ -9,11 +9,14 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
-
+                //onServiceDisconnected在客户端的UI线程中被回调，而binderDied在客户端的Binder线程池中被回调
             }
         };
 
@@ -102,9 +105,11 @@ public class MainActivity extends AppCompatActivity {
             if (null == mIMsgManager) {
                 return;
             }
+            //解绑死亡代理
             mIMsgManager.asBinder().unlinkToDeath(mDeathRecipient, 0);
             mIMsgManager = null;
             //断线重来逻辑
+            Log.d("AIDLDEMO", "服务端失去连接");
         }
     };
 

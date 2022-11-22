@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     mAdapter.notifyDataSetChanged();
                     mListView.smoothScrollToPosition(mMsgs.size() - 1);
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            //onServiceDisconnected在客户端的UI线程中被回调，而binderDied在客户端的Binder线程池中被回调
         }
     };
 
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_loop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (service == null){
+                if (service == null) {
                     service = Executors.newScheduledThreadPool(2);
                     service.scheduleAtFixedRate(mRunnable, 1, 1, TimeUnit.SECONDS);
                 }
@@ -152,9 +153,23 @@ public class MainActivity extends AppCompatActivity {
             if (null == mIMsgManager) {
                 return;
             }
+            //解绑死亡代理
             mIMsgManager.asBinder().unlinkToDeath(mDeathRecipient, 0);
             mIMsgManager = null;
             //在这里重新绑定远程服务
+            Log.d("AIDLDEMO", "客户端失去连接");
+
+
+           /*
+           //重连尝试
+            Intent intent = new Intent();
+            //跨进程通信需要使用action启动
+            intent.setAction("com.aidl.service.MyService");
+            //android5.0之后，如果servicer不在同一个App的包中，需要设置service所在程序的包名
+            intent.setPackage("com.aidl.service");
+            bindService(intent, mConnection, BIND_AUTO_CREATE);
+            */
+
         }
     };
 
