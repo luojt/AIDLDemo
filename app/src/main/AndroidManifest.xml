@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.aidl.service">
+    package="com.aidl.service">
+
+    <permission
+        android:name="com.aidl.service.PERMISSION"
+        android:protectionLevel="signature" />
+
 
     <application
         android:allowBackup="true"
@@ -9,14 +14,14 @@
         android:persistent="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
-        <activity android:name=".MainActivity"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -24,9 +29,9 @@
             android:name=".MyService"
             android:enabled="true"
             android:exported="true"
-            >
+            android:permission="com.aidl.service.PERMISSION">
             <intent-filter android:priority="1000">
-                <action android:name="com.aidl.service.MyService"></action>
+                <action android:name="com.aidl.service.MyService.AIDL_SERVICE"></action>
             </intent-filter>
         </service>
     </application>

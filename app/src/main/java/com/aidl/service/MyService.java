@@ -60,7 +60,7 @@ public class MyService extends Service {
     public void receiveMsg(Msg msg) {
         //通知Callback循环开始,返回N为实现mReceiveListener回调的个数
         final int N = mReceiveListener.beginBroadcast();
-        msg.setMsg("我是服务器，我收到了："+msg.getMsg());
+        msg.setMsg("我是服务器的MyService，我收到了："+msg.getMsg());
         for (int i = 0; i < N; i++){
             IReceiveMsgListener listener = mReceiveListener.getBroadcastItem(i);
             if (listener != null){

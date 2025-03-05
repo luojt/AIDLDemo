@@ -1,5 +1,7 @@
 package com.aidl.client;
 
+import static android.content.Context.BIND_AUTO_CREATE;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -72,11 +74,14 @@ public class MainActivity extends AppCompatActivity {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+
+            Toast.makeText(MainActivity.this, "已连接", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             //onServiceDisconnected在客户端的UI线程中被回调，而binderDied在客户端的Binder线程池中被回调
+            Toast.makeText(MainActivity.this, "断开连接", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -95,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent();
         //跨进程通信需要使用action启动
-        intent.setAction("com.aidl.service.MyService");
+        intent.setAction("com.aidl.service.MyService.AIDL_SERVICE");
 
         //android5.0之后，如果servicer不在同一个App的包中，需要设置service所在程序的包名
         intent.setPackage("com.aidl.service");
@@ -112,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     mMsg.setMsg(msg);
+                    if (myBinder==null){
+                        Toast.makeText(MainActivity.this, "未连接", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     myBinder.sendMsg(mMsg);
                 } catch (RemoteException e) {
                     e.printStackTrace();
